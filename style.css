@@ -1,4 +1,4 @@
-body{background-color:#fffb07;}
+body{background-color:#d3ffff;}
 
 p {color: #800e52; font-size: 80;}
 
@@ -31,3 +31,10 @@ body {
     border-right: 25px solid transparent;
     border-bottom: 50px solid green;
   }
+  
+  ul {
+    background: #3399ff;
+    padding: 20px;
+  }
+  
+  
