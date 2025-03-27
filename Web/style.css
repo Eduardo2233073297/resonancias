@@ -1,11 +1,17 @@
-body{background-color:#d3ffff;}
-
-p {color: #800e52; font-size: 80;}
-
 body {
     margin: 0;
     overflow: hidden;
     cursor: pointer;
+  }
+
+  h1 {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: purple;
+    font-size: 3rem;
+    z-index: 10;
   }
 
   .shape {
@@ -31,10 +37,3 @@ body {
     border-right: 25px solid transparent;
     border-bottom: 50px solid green;
   }
-  
-  ul {
-    background: #3399ff;
-    padding: 20px;
-  }
-  
-  
