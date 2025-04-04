@@ -4,7 +4,7 @@ let raf;
 let running = false;
 
 const ball = {
-  x: 60,
+  x: 100,
   y: 100,
   vx: 5,
   vy: 1,
