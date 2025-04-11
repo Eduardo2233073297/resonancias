@@ -1,76 +1,71 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-let raf;
-let running = false;
+// Define un arreglo para almacenar objetos de copos de nieve
+let snowflakes = [];
 
-const ball = {
-  x: 100,
-  y: 100,
-  vx: 5,
-  vy: 1,
-  radius: 25,
-  color: "blue",
-  opacity: 0,
-  fading: false,
-  draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-    ctx.closePath();
-    ctx.fillStyle = `rgba(0, 0, 255, ${this.opacity})`;
-    ctx.fill();
-  },
-};
+function setup() {
+  createCanvas(1500, 455);
 
-function clear() {
-  ctx.fillStyle = "rgb(26, 5, 61)"; // Aquí se define el color del fondo del canvas
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  angleMode(DEGREES); // Usa grados en lugar de radianes
+
+  // Crea los objetos de copos de nieve
+  for (let i = 0; i < 300; i++) {
+    // Agrega un nuevo objeto de copo de nieve al arreglo
+    snowflakes.push(new Snowflake());
+  }
+
+  // Crea una descripción accesible para lectores de pantalla
+  describe('Copos de nieve cayendo sobre un fondo negro.');
 }
 
 function draw() {
-  clear();
-  
-  if (ball.opacity > 0) {
-    ball.draw();
-    ball.x += ball.vx;
-    ball.y += ball.vy;
-  }
-  
-  if (
-    ball.y + ball.vy > canvas.height - ball.radius ||
-    ball.y + ball.vy < ball.radius
-  ) {
-    ball.vy = -ball.vy;
-  }
-  if (
-    ball.x + ball.vx > canvas.width - ball.radius ||
-    ball.x + ball.vx < ball.radius
-  ) {
-    ball.vx = -ball.vx;
-  }
+  background(color('#150036')); // Fondo negro
 
-  
+  // Actualiza y muestra cada copo de nieve en el arreglo
+  let currentTime = frameCount / 60;
 
-  raf = window.requestAnimationFrame(draw);
+  for (let flake of snowflakes) {
+    // Actualiza la posición de cada copo de nieve y lo muestra
+    flake.update(currentTime);
+    flake.display();
+  }
 }
 
-canvas.addEventListener("click", (e) => {
-  ball.x = e.clientX;
-  ball.y = e.clientY;
-  ball.opacity = 1; // Restablecer opacidad
-  
-  running = true;
-  raf = window.requestAnimationFrame(draw);
+// Define la clase Snowflake (Copo de Nieve)
 
-  
-  
-  if (!running) {
-    ball.x = e.clientX;
-    ball.y = e.clientY;
-    ball.opacity = 1; // Aparece completamente
-    ball.fading = false;
-    running = true;
-    raf = window.requestAnimationFrame(draw); 
+class Snowflake {
+  constructor() {
+    this.posX = 0;
+    this.posY = random(-height, 0); // Empieza por encima del canvas
+    this.initialAngle = random(0, 360); // Ángulo inicial aleatorio
+    this.size = random(2, 5); // Tamaño aleatorio
+    this.radius = sqrt(random(pow(width / 2, 2))); // Radio para el movimiento horizontal
+    this.color = color(random(200, 256), random(200, 256), random(200, 256)); // Color claro
   }
-});
 
-ball.draw();
+  update(time) {
+    // Define la velocidad angular (grados por segundo)
+    let angularSpeed = 35;
+
+    // Calcula el ángulo actual
+    let angle = this.initialAngle + angularSpeed * time;
+
+    // La posición X sigue una onda seno
+    this.posX = width / 2 + this.radius * sin(angle);
+
+    // Copos de nieve más pequeños caen más lento
+    let ySpeed = 2 / this.size;
+    this.posY += ySpeed;
+
+    // Cuando el copo llega al fondo, vuelve a subir
+    if (this.posY > height) {
+      this.posY = -50;
+    }
+  }
+
+  display() {
+    fill(this.color); // Rellena con el color asignado
+    noStroke();       // Sin borde
+    ellipse(this.posX, this.posY, this.size); // Dibuja el copo
+  }
+}
+
+
