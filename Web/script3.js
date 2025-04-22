@@ -1,71 +1,148 @@
-// Define un arreglo para almacenar objetos de copos de nieve
-let snowflakes = [];
+let animations = [];
+let confettis = [];
+let bubbles = [];
+let rays = [];
+let currentEffect = "";
 
 function setup() {
-  createCanvas(1500, 455);
-
-  angleMode(DEGREES); // Usa grados en lugar de radianes
-
-  // Crea los objetos de copos de nieve
-  for (let i = 0; i < 300; i++) {
-    // Agrega un nuevo objeto de copo de nieve al arreglo
-    snowflakes.push(new Snowflake());
-  }
-
-  // Crea una descripción accesible para lectores de pantalla
-  describe('Copos de nieve cayendo sobre un fondo negro.');
+  createCanvas(windowWidth, 500);
+  colorMode(HSB);
+  noStroke();
+  background(49, 98, 99);
+  document.body.style.margin = 0;
+  document.body.style.overflow = 'hidden';
 }
 
 function draw() {
-  background(color('#150036')); // Fondo negro
+  background(49, 98, 99, 0.1);
 
-  // Actualiza y muestra cada copo de nieve en el arreglo
-  let currentTime = frameCount / 60;
-
-  for (let flake of snowflakes) {
-    // Actualiza la posición de cada copo de nieve y lo muestra
-    flake.update(currentTime);
-    flake.display();
-  }
-}
-
-// Define la clase Snowflake (Copo de Nieve)
-
-class Snowflake {
-  constructor() {
-    this.posX = 0;
-    this.posY = random(-height, 0); // Empieza por encima del canvas
-    this.initialAngle = random(0, 360); // Ángulo inicial aleatorio
-    this.size = random(2, 5); // Tamaño aleatorio
-    this.radius = sqrt(random(pow(width / 2, 2))); // Radio para el movimiento horizontal
-    this.color = color(random(200, 256), random(200, 256), random(200, 256)); // Color claro
-  }
-
-  update(time) {
-    // Define la velocidad angular (grados por segundo)
-    let angularSpeed = 35;
-
-    // Calcula el ángulo actual
-    let angle = this.initialAngle + angularSpeed * time;
-
-    // La posición X sigue una onda seno
-    this.posX = width / 2 + this.radius * sin(angle);
-
-    // Copos de nieve más pequeños caen más lento
-    let ySpeed = 2 / this.size;
-    this.posY += ySpeed;
-
-    // Cuando el copo llega al fondo, vuelve a subir
-    if (this.posY > height) {
-      this.posY = -50;
+  // Confetti
+  for (let i = confettis.length - 1; i >= 0; i--) {
+    confettis[i].update();
+    confettis[i].display();
+    if (confettis[i].isDead()) {
+      confettis.splice(i, 1);
     }
   }
 
-  display() {
-    fill(this.color); // Rellena con el color asignado
-    noStroke();       // Sin borde
-    ellipse(this.posX, this.posY, this.size); // Dibuja el copo
+  // Burbujas
+  for (let i = bubbles.length - 1; i >= 0; i--) {
+    bubbles[i].update();
+    bubbles[i].display();
+    if (bubbles[i].isDead()) {
+      bubbles.splice(i, 1);
+    }
+  }
+
+  // Rayos felices (mientras se arrastra)
+  for (let i = rays.length - 1; i >= 0; i--) {
+    rays[i].update();
+    rays[i].display();
+    if (rays[i].isDead()) {
+      rays.splice(i, 1);
+    }
   }
 }
 
+function mousePressed() {
+  let randomEffect = random(["confetti", "bubbles"]);
+  currentEffect = randomEffect;
 
+  if (randomEffect === "confetti") {
+    for (let i = 0; i < 30; i++) {
+      confettis.push(new Confetti(mouseX, mouseY));
+    }
+  } else if (randomEffect === "bubbles") {
+    for (let i = 0; i < 20; i++) {
+      bubbles.push(new Bubble(mouseX, mouseY));
+    }
+  }
+}
+
+function mouseDragged() {
+  currentEffect = "rays";
+  for (let i = 0; i < 4; i++) {
+    rays.push(new Ray(mouseX, mouseY));
+  }
+}
+
+// 🎉 CONFETTI
+class Confetti {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = random(5, 10);
+    this.hue = random(360);
+    this.vel = createVector(random(-1, 1), random(-5, -1));
+    this.alpha = 255;
+  }
+
+  update() {
+    this.x += this.vel.x;
+    this.y += this.vel.y;
+    this.vel.y += 0.1;
+    this.alpha -= 3;
+  }
+
+  display() {
+    fill(this.hue, 80, 90, this.alpha / 255);
+    rect(this.x, this.y, this.size, this.size);
+  }
+
+  isDead() {
+    return this.alpha <= 0;
+  }
+}
+
+// 🫧 BURBUJAS
+class Bubble {
+  constructor(x, y) {
+    this.x = x + random(-30, 30);
+    this.y = y + random(-30, 30);
+    this.r = random(10, 40);
+    this.hue = random(200, 280); // Azul-violeta
+    this.alpha = 255;
+  }
+
+  update() {
+    this.y -= 1;
+    this.alpha -= 2;
+  }
+
+  display() {
+    fill(this.hue, 50, 100, this.alpha / 255);
+    ellipse(this.x, this.y, this.r);
+  }
+
+  isDead() {
+    return this.alpha <= 0;
+  }
+}
+
+// ⚡️ RAYOS FELICES
+class Ray {
+  constructor(x, y) {
+    this.x1 = x;
+    this.y1 = y;
+    this.len = random(20, 100);
+    this.angle = random(TWO_PI);
+    this.hue = random(360);
+    this.alpha = 255;
+  }
+
+  update() {
+    this.alpha -= 5;
+  }
+
+  display() {
+    stroke(this.hue, 100, 100, this.alpha / 255);
+    strokeWeight(3);
+    let x2 = this.x1 + cos(this.angle) * this.len;
+    let y2 = this.y1 + sin(this.angle) * this.len;
+    line(this.x1, this.y1, x2, y2);
+  }
+
+  isDead() {
+    return this.alpha <= 0;
+  }
+}

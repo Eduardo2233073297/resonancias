@@ -4,21 +4,32 @@ let framesBetweenParticles = 5;
 let nextParticleFrame = 0;
 let previousParticlePosition;
 let particleFadeFrames = 300;
+let extraAnimations = [];
 
 function setup() {
   createCanvas(1500, 455);
   colorMode(HSB);
+  angleMode(DEGREES);
   previousParticlePosition = createVector();
-  // Configuración del body para permitir interacciones de clic
+  noStroke();
+
   document.body.style.margin = 0;
   document.body.style.overflow = 'hidden';
 }
 
 function draw() {
-  background(49, 98, 99);
+  background(49, 98, 99, 0.1);
   for (let path of paths) {
     path.update();
     path.display();
+  }
+
+  for (let i = extraAnimations.length - 1; i >= 0; i--) {
+    extraAnimations[i].update();
+    extraAnimations[i].display();
+    if (extraAnimations[i].isDead()) {
+      extraAnimations.splice(i, 1);
+    }
   }
 }
 
@@ -27,6 +38,17 @@ function mousePressed() {
   paths.push(new Path());
   previousParticlePosition.set(mouseX, mouseY);
   createParticle();
+
+  let choice = random(["circles", "stars"]);
+  if (choice === "circles") {
+    for (let i = 0; i < 10; i++) {
+      extraAnimations.push(new ColorCircle(mouseX + random(-50, 50), mouseY + random(-50, 50)));
+    }
+  } else {
+    for (let i = 0; i < 15; i++) {
+      extraAnimations.push(new HappyStar(mouseX, mouseY));
+    }
+  }
 }
 
 function mouseDragged() {
@@ -109,50 +131,73 @@ class Particle {
   }
 }
 
-// ----------- Código de shapes HTML -----------
-// Este código ahora usa JavaScript puro para crear las formas y animarlas sin HTML directo
-
-document.addEventListener("click", (event) => {
-  const shapes = ["circle", "square", "triangle"];
-  const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
-
-  // Crea un contenedor de forma usando JavaScript
-  const shapeElement = document.createElement("div");
-  shapeElement.classList.add("shape", randomShape);
-
-  // Establece la posición de la forma
-  shapeElement.style.position = "absolute";
-  shapeElement.style.width = "50px";
-  shapeElement.style.height = "50px";
-  shapeElement.style.left = `${event.clientX - 25}px`;
-  shapeElement.style.top = `${event.clientY - 25}px`;
-  shapeElement.style.transition = "opacity 0.5s ease";
-  shapeElement.style.pointerEvents = "none";
-  
-  // Agrega la forma al cuerpo del documento
-  document.body.appendChild(shapeElement);
-
-  // Establece los estilos de las formas
-  if (randomShape === "circle") {
-    shapeElement.style.backgroundColor = "rgba(255, 100, 100, 0.7)";
-    shapeElement.style.borderRadius = "50%";
-  } else if (randomShape === "square") {
-    shapeElement.style.backgroundColor = "rgba(100, 255, 100, 0.7)";
-  } else if (randomShape === "triangle") {
-    shapeElement.style.width = "0";
-    shapeElement.style.height = "0";
-    shapeElement.style.borderLeft = "25px solid transparent";
-    shapeElement.style.borderRight = "25px solid transparent";
-    shapeElement.style.borderBottom = "50px solid rgba(100, 100, 255, 0.7)";
-    shapeElement.style.background = "none";
+class ColorCircle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.r = random(10, 40);
+    this.hue = random(360);
+    this.alpha = 255;
   }
 
-  // Animación de desvanecimiento
-  setTimeout(() => {
-    shapeElement.style.opacity = "0";
-    setTimeout(() => {
-      shapeElement.remove();
-    }, 500);
-  }, 1000);
-});
+  update() {
+    this.r += 1.5;
+    this.alpha -= 3;
+  }
+
+  display() {
+    fill(this.hue, 100, 100, this.alpha / 255);
+    ellipse(this.x, this.y, this.r);
+  }
+
+  isDead() {
+    return this.alpha <= 0;
+  }
+}
+
+class HappyStar {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = random(10, 25);
+    this.hue = random(360);
+    this.alpha = 255;
+    this.angle = random(360);
+    this.speed = random(1, 4);
+  }
+
+  update() {
+    this.x += cos(this.angle) * this.speed;
+    this.y += sin(this.angle) * this.speed;
+    this.alpha -= 4;
+  }
+
+  display() {
+    push();
+    translate(this.x, this.y);
+    rotate(frameCount % 360);
+    fill(this.hue, 100, 100, this.alpha / 255);
+    this.drawStar(0, 0, this.size, this.size / 2, 5);
+    pop();
+  }
+
+  drawStar(x, y, radius1, radius2, npoints) {
+    let angle = 360 / npoints;
+    beginShape();
+    for (let a = 0; a < 360; a += angle) {
+      let sx = cos(a) * radius1;
+      let sy = sin(a) * radius1;
+      vertex(sx, sy);
+      sx = cos(a + angle / 2) * radius2;
+      sy = sin(a + angle / 2) * radius2;
+      vertex(sx, sy);
+    }
+    endShape(CLOSE);
+  }
+
+  isDead() {
+    return this.alpha <= 0;
+  }
+}
+
 

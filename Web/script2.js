@@ -1,68 +1,120 @@
-const canvas = document.getElementById("canvas"); 
-const ctx = canvas.getContext("2d");
+let animations = [];
+let activeAnimations = [];
 
-// Círculos (balones) definidos en un array
-const balls = [
-  { x: 100, y: 100, radius: 25, color: "red", dx: 2, dy: 2, opacity: 0, fading: 0.02 },
-  { x: 200, y: 150, radius: 30, color: "red", dx: 2, dy: -2, opacity: 0, fading: 0.02 },
-  { x: 300, y: 200, radius: 40, color: "red", dx: -2, dy: 2, opacity: 0, fading: 0.02 },
-  { x: 150, y: 250, radius: 35, color: "red", dx: 3, dy: -3, opacity: 0, fading: 0.02 },
-  { x: 400, y: 100, radius: 20, color: "red", dx: -3, dy: 3, opacity: 0, fading: 0.02 },
-];
+function setup() {
+  createCanvas(windowWidth, 500);
+  colorMode(HSB);
+  angleMode(DEGREES);
+  noStroke();
+  background(49, 98, 99);
 
-// Función para dibujar todos los círculos
-function drawBalls() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar el canvas antes de redibujar
+  document.body.style.margin = 0;
+  document.body.style.overflow = 'hidden';
+}
 
-  balls.forEach(ball => {
-    if (ball.opacity > 0) {
-      // Mover el círculo
-      ball.x += ball.dx;
-      ball.y += ball.dy;
+function draw() {
+  background(49, 98, 99, 0.1);
 
-      // Modificar opacidad para efecto de desvanecimiento
-      ball.opacity -= 0.02;
-      if (ball.opacity <= 0) {
-        ball.opacity = 0;
-      }
-
-      // Colisiones con los bordes del canvas
-      if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
-        ball.dx = -ball.dx; // Invertir dirección en el eje X
-      }
-      if (ball.y + ball.radius > canvas.height || ball.y - ball.radius < 0) {
-        ball.dy = -ball.dy; // Invertir dirección en el eje Y
-      }
-
-      // Dibujar el círculo con opacidad
-      ctx.beginPath();
-      ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2, true);
-      ctx.closePath();
-      ctx.fillStyle = `rgba(255, 0, 0, ${ball.opacity})`;
-      ctx.fill();
+  for (let i = activeAnimations.length - 1; i >= 0; i--) {
+    let anim = activeAnimations[i];
+    anim.update();
+    anim.display();
+    if (anim.isDead()) {
+      activeAnimations.splice(i, 1);
     }
-  });
+  }
 }
 
-// Función de animación
-function animate() {
-  drawBalls(); // Dibujar los círculos
-  requestAnimationFrame(animate); // Llamar a la función de nuevo para crear el loop de animación
+function mousePressed() {
+  const types = [Confetti, BubbleExplosion, RadiantBurst];
+  const Type = random(types);
+  for (let i = 0; i < 10; i++) {
+    activeAnimations.push(new Type(mouseX, mouseY));
+  }
 }
 
-// Llamar a la función para comenzar la animación
-animate();
+// --------- Confetti Partículas ---------
+class Confetti {
+  constructor(x, y) {
+    this.x = x + random(-50, 50);
+    this.y = y + random(-50, 50);
+    this.size = random(6, 12);
+    this.hue = random(360);
+    this.vx = random(-2, 2);
+    this.vy = random(-1, 3);
+    this.alpha = 255;
+  }
 
-// Evento para mostrar y desaparecer las figuras al hacer clic en la pantalla
-document.addEventListener("click", () => {
-  balls.forEach(ball => {
-    ball.opacity = 1; // Hacer que las figuras aparezcan
-  });
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.vy += 0.1; // gravedad
+    this.alpha -= 3;
+  }
 
-  setTimeout(() => {
-    balls.forEach(ball => {
-      ball.opacity = 0; // Hacer que las figuras desaparezcan después de 1 segundo
-    });
-  }, 1000);
-});
+  display() {
+    fill(this.hue, 80, 100, this.alpha / 255);
+    rect(this.x, this.y, this.size, this.size);
+  }
 
+  isDead() {
+    return this.alpha <= 0;
+  }
+}
+
+// --------- Burbujas Expansivas ---------
+class BubbleExplosion {
+  constructor(x, y) {
+    this.x = x + random(-30, 30);
+    this.y = y + random(-30, 30);
+    this.r = random(10, 20);
+    this.hue = random(360);
+    this.alpha = 255;
+  }
+
+  update() {
+    this.r += 2;
+    this.alpha -= 4;
+  }
+
+  display() {
+    fill(this.hue, 60, 100, this.alpha / 255);
+    ellipse(this.x, this.y, this.r);
+  }
+
+  isDead() {
+    return this.alpha <= 0;
+  }
+}
+
+// --------- Rayos Giratorios ---------
+class RadiantBurst {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.angle = random(360);
+    this.length = random(30, 80);
+    this.hue = random(360);
+    this.alpha = 255;
+    this.rotation = random(-3, 3);
+  }
+
+  update() {
+    this.angle += this.rotation;
+    this.alpha -= 4;
+  }
+
+  display() {
+    push();
+    translate(this.x, this.y);
+    rotate(this.angle);
+    stroke(this.hue, 100, 100, this.alpha / 255);
+    strokeWeight(2);
+    line(0, 0, this.length, 0);
+    pop();
+  }
+
+  isDead() {
+    return this.alpha <= 0;
+  }
+}
