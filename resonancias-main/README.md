@@ -1,2 +1,0 @@
-# resonancias
-repositorio de eje 
