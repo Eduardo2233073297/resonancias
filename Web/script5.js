@@ -5,11 +5,11 @@ let fallingPetals = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
-  background(230, 230, 255); // Fondo suave, con colores pasteles
+  background(22, 0, 56); // Fondo suave, con colores pasteles
 }
 
 function draw() {
-  background(230, 230, 255, 20); // Fondo con leve transparencia
+  background(22, 0, 56, 20); // Fondo con leve transparencia
 
   // Animación de Cadenas Rotas
   for (let chain of brokenChains) {

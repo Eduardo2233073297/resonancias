@@ -5,12 +5,12 @@ let roots = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   noStroke();
-  background(150, 150, 255); // Fondo gris azulado
+  background(22, 0, 56); // Fondo gris azulado
   ellipseMode(RADIUS);
 }
 
 function draw() {
-  background(150, 150, 255, 30); // Fondo que deja un rastro de transparencia
+  background(22, 0, 56, 30); // Fondo que deja un rastro de transparencia
 
   // Animación de Lágrimas de luz
   for (let t of tears) {

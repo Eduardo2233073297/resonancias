@@ -5,13 +5,14 @@ let witheredLeaves = [];
 function setup() {
   createCanvas(windowWidth, 500);
   colorMode(HSB);
-  background(210, 30, 50); // Fondo en tonos tristes
   noStroke();
 }
 
 function draw() {
-  background(210, 30, 50, 0.1); // Fondo con transparencia suave para efectos sutiles
+  // Fondo sólido con color HSB(22, 0, 56)
+  background(265, 95, 17);
 
+  // Actualizar y dibujar las gotas
   for (let i = fallingRaindrops.length - 1; i >= 0; i--) {
     fallingRaindrops[i].update();
     fallingRaindrops[i].display();
@@ -20,6 +21,7 @@ function draw() {
     }
   }
 
+  // Actualizar y dibujar las burbujas
   for (let i = fadingBubbles.length - 1; i >= 0; i--) {
     fadingBubbles[i].update();
     fadingBubbles[i].display();
@@ -28,6 +30,7 @@ function draw() {
     }
   }
 
+  // Actualizar y dibujar las hojas
   for (let i = witheredLeaves.length - 1; i >= 0; i--) {
     witheredLeaves[i].update();
     witheredLeaves[i].display();
@@ -37,26 +40,21 @@ function draw() {
   }
 }
 
-// Animación al hacer clic: gotas de lluvia
 function mousePressed() {
+  for (let i = 0; i < 3; i++) {
+    witheredLeaves.push(new WitheredLeaf(mouseX + random(-20, 20), mouseY));
+  }
   for (let i = 0; i < 5; i++) {
     fallingRaindrops.push(new FallingRaindrop(mouseX + random(-30, 30), mouseY));
   }
 }
 
-// Animación al mantener el clic y mover el mouse: burbujas desvanecidas
 function mouseDragged() {
   fadingBubbles.push(new FadingBubble(mouseX, mouseY));
 }
 
-// Animación al mantener el clic: hojas marchitas
-function mousePressed() {
-  for (let i = 0; i < 3; i++) {
-    witheredLeaves.push(new WitheredLeaf(mouseX + random(-20, 20), mouseY));
-  }
-}
+// --- CLASES ---
 
-// FallingRaindrop - Gotas de lluvia que caen lentamente
 class FallingRaindrop {
   constructor(x, y) {
     this.x = x;
@@ -81,7 +79,6 @@ class FallingRaindrop {
   }
 }
 
-// FadingBubble - Burbujas que suben y se desvanecen
 class FadingBubble {
   constructor(x, y) {
     this.x = x;
@@ -92,7 +89,7 @@ class FadingBubble {
   }
 
   update() {
-    this.y -= this.speed;
+    this.y += this.speed;
     this.alpha -= 3;
   }
 
@@ -106,7 +103,6 @@ class FadingBubble {
   }
 }
 
-// WitheredLeaf - Hojas marchitas que giran y caen
 class WitheredLeaf {
   constructor(x, y) {
     this.x = x;
@@ -125,7 +121,7 @@ class WitheredLeaf {
   }
 
   display() {
-    fill(160, 50, 50, this.alpha / 255); // Color de hojas marchitas
+    fill(160, 50, 50, this.alpha / 255);
     ellipse(this.x, this.y, this.size);
   }
 
@@ -133,3 +129,4 @@ class WitheredLeaf {
     return this.alpha <= 0;
   }
 }
+

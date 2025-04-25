@@ -1,140 +1,134 @@
-let bloodSplats = [];
-let spiders = [];
-let floatingGhosts = [];
+let gentleCircles = [];
+let floatingRectangles = [];
+let shiftingGrid = [];
 
 function setup() {
   createCanvas(windowWidth, 500);
   noStroke();
-  angleMode(DEGREES);
-  background(15, 5, 20);
+  background(10, 10, 20);
+  ellipseMode(RADIUS);
 
   document.body.style.margin = 0;
   document.body.style.overflow = 'hidden';
 }
 
 function draw() {
-  background(15, 5, 20, 20); // fondo oscuro con leve transparencia
+  background(0, 0, 0, 30);
 
-  for (let i = bloodSplats.length - 1; i >= 0; i--) {
-    bloodSplats[i].update();
-    bloodSplats[i].display();
-    if (bloodSplats[i].isDead()) {
-      bloodSplats.splice(i, 1);
-    }
+  for (let c of gentleCircles) {
+    c.update();
+    c.display();
   }
 
-  for (let i = spiders.length - 1; i >= 0; i--) {
-    spiders[i].update();
-    spiders[i].display();
-    if (spiders[i].isDead()) {
-      spiders.splice(i, 1);
-    }
+  for (let r of floatingRectangles) {
+    r.update();
+    r.display();
   }
 
-  for (let i = floatingGhosts.length - 1; i >= 0; i--) {
-    floatingGhosts[i].update();
-    floatingGhosts[i].display();
-    if (floatingGhosts[i].isDead()) {
-      floatingGhosts.splice(i, 1);
-    }
+  for (let g of shiftingGrid) {
+    g.update();
+    g.display();
+  }
+
+  if (mouseIsPressed) {
+    floatingRectangles.push(new Rectangle(mouseX, mouseY));
   }
 }
 
 function mousePressed() {
-  for (let i = 0; i < 5; i++) {
-    bloodSplats.push(new Blood(mouseX + random(-30, 30), mouseY + random(-30, 30)));
+  for (let i = 0; i < 6; i++) {
+    gentleCircles.push(new Circle(mouseX + random(-30, 30), mouseY + random(-30, 30)));
   }
-
-  for (let i = 0; i < 3; i++) {
-    spiders.push(new Spider(mouseX + random(-50, 50)));
-  }
-
-  for (let i = 0; i < 2; i++) {
-    floatingGhosts.push(new FloatingGhost(mouseX, mouseY));
-  }
+  shiftingGrid.push(new Grid(mouseX, mouseY));
 }
 
-// ---------- BLOOD ----------
-class Blood {
+// Función para obtener color aleatorio rojo, blanco o negro
+function randomPaletteColor(alpha) {
+  let palette = [
+    color(255, 0, 0, alpha),     // rojo
+    color(255, 255, 255, alpha), // blanco
+    color(0, 0, 0, alpha)        // negro
+  ];
+  return random(palette);
+}
+
+// --- CÍRCULOS SUAVES ---
+class Circle {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.r = random(5, 30);
-    this.opacity = 255;
-    this.v = random(0.5, 2);
+    this.r = random(15, 30);
+    this.opacity = 180;
+    this.color = randomPaletteColor(this.opacity);
+    this.speed = random(0.2, 0.5);
   }
 
   update() {
-    this.y += this.v;
-    this.opacity -= 2;
+    this.y -= this.speed;
+    this.opacity -= 0.3;
+    this.color.setAlpha(this.opacity);
   }
 
   display() {
-    fill(150, 0, 0, this.opacity);
-    ellipse(this.x, this.y, this.r);
-  }
-
-  isDead() {
-    return this.opacity <= 0;
+    fill(this.color);
+    ellipse(this.x, this.y, this.r, this.r);
   }
 }
 
-// ---------- SPIDER ----------
-class Spider {
-  constructor(x) {
+// --- RECTÁNGULOS FLUCTUANTES ---
+class Rectangle {
+  constructor(x, y) {
     this.x = x;
-    this.y = 0;
+    this.y = y;
+    this.width = random(40, 80);
+    this.height = random(20, 50);
+    this.opacity = 200;
+    this.color = randomPaletteColor(this.opacity);
+    this.speed = random(0.3, 0.8);
+  }
+
+  update() {
+    this.x += sin(frameCount * this.speed) * 2;
+    this.y += cos(frameCount * this.speed) * 2;
+    this.opacity -= 0.5;
+    this.color.setAlpha(this.opacity);
+  }
+
+  display() {
+    fill(this.color);
+    rect(this.x, this.y, this.width, this.height);
+  }
+}
+
+// --- CUADRÍCULA CAMBIANTE ---
+class Grid {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
     this.size = random(15, 30);
-    this.speed = random(1, 2);
-    this.alpha = 255;
+    this.spacing = 15;
+    this.numRows = 5;
+    this.numCols = 5;
+    this.opacity = 100;
+    this.color = randomPaletteColor(this.opacity);
   }
 
   update() {
-    this.y += this.speed;
-    if (this.y > height) {
-      this.alpha -= 5;
+    this.opacity -= 1;
+    this.color.setAlpha(this.opacity);
+  }
+
+  display() {
+    noFill();
+    stroke(this.color);
+    strokeWeight(2);
+
+    for (let i = 0; i < this.numRows; i++) {
+      for (let j = 0; j < this.numCols; j++) {
+        let offsetX = this.x + i * (this.size + this.spacing);
+        let offsetY = this.y + j * (this.size + this.spacing);
+        ellipse(offsetX, offsetY, this.size);
+      }
     }
-  }
-
-  display() {
-    stroke(200, this.alpha);
-    line(this.x, 0, this.x, this.y);
-    noStroke();
-    fill(0, 0, 0, this.alpha);
-    ellipse(this.x, this.y, this.size, this.size);
-  }
-
-  isDead() {
-    return this.alpha <= 0;
-  }
-}
-
-// ---------- FLOATING GHOST ----------
-class FloatingGhost {
-  constructor(x, y) {
-    this.x = x;
-    this.y = y;
-    this.opacity = 255;
-    this.size = random(40, 70);
-    this.vx = random(-1.5, 1.5);
-    this.vy = random(-0.5, -2);
-  }
-
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.opacity -= 1.5;
-  }
-
-  display() {
-    fill(255, this.opacity);
-    ellipse(this.x, this.y, this.size, this.size * 1.2);
-    fill(0, this.opacity);
-    ellipse(this.x - 10, this.y - 5, 8, 8);
-    ellipse(this.x + 10, this.y - 5, 8, 8);
-  }
-
-  isDead() {
-    return this.opacity <= 0;
   }
 }

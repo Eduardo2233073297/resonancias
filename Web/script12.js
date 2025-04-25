@@ -22,7 +22,7 @@ let flock;
 
 function setup() {
   createCanvas(1500, 455);
-  colorMode(HSB);
+  colorMode(RGB);
   angleMode(DEGREES);
 
   // Inicializar figura orgánica
@@ -45,7 +45,7 @@ function setup() {
 }
 
 function draw() {
-  background(210, 30, 95, 0.1); // fondo relajante lavanda claro
+  background(137, 151, 196, 20); // fondo relajante lavanda claro
 
   // Dibujar figura orgánica
   drawShape();

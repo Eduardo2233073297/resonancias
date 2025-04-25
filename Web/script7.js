@@ -7,14 +7,14 @@ function setup() {
   createCanvas(windowWidth, 500);
   angleMode(DEGREES);
   noStroke();
-  background(10, 10, 30); // fondo oscuro para atmósfera de miedo
+  background(0, 0, 30); // fondo oscuro para atmósfera de miedo
 
   document.body.style.margin = 0;
   document.body.style.overflow = 'hidden';
 }
 
 function draw() {
-  background(10, 10, 30, 25); // mantiene rastro suave
+  background(0, 0, 0, 30); // mantiene rastro suave
 
   for (let eye of creepyEyes) {
     eye.update();

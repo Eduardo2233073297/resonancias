@@ -14,7 +14,7 @@ function setup() {
 }
 
 function draw() {
-  background(30, 30, 40, 25);
+  background(0, 0, 0, 30);
 
   for (let i = bats.length - 1; i >= 0; i--) {
     bats[i].update();

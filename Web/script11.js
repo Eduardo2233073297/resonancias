@@ -6,7 +6,7 @@ let curvedLines = [];
 function setup() {
   createCanvas(windowWidth, 500);
   noStroke();
-  background(200, 240, 235);
+  background(137, 151, 196);
   ellipseMode(RADIUS);
 
   document.body.style.margin = 0;
@@ -14,7 +14,7 @@ function setup() {
 }
 
 function draw() {
-  background(200, 240, 235, 30);
+  background(137, 151, 196, 30);
 
   for (let c of floatingCircles) {
     c.update();
