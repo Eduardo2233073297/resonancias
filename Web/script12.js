@@ -1,57 +1,38 @@
 // --- VARIABLES DE LA FIGURA ORGÁNICA ---
 let nodes = 3;
-let nodeStartX = [];
-let nodeStartY = [];
-let nodeX = [];
-let nodeY = [];
-let angle = [];
-let frequency = [];
-let centerX, centerY;
-let accelX = 0;
-let accelY = 0;
-let deltaX = 0;
-let deltaY = 0;
-let springing = 0.0009;
-let damping = 0.98;
-let organicConstant = 1.0;
-let rotAngle = 0;
-let radius = 120;
+let nodeStartX = [], nodeStartY = [], nodeX = [], nodeY = [], angle = [], frequency = [];
+let centerX, centerY, accelX = 0, accelY = 0, deltaX = 0, deltaY = 0;
+let springing = 0.0009, damping = 0.98, organicConstant = 1.0, rotAngle = 0, radius = 120;
 
 // --- VARIABLES DE BOIDS ---
 let flock;
 
 function setup() {
-  createCanvas(1500, 455);
+  let canvas = createCanvas(windowWidth, 525);
+  canvas.parent('canvas-container'); // <-- Agregado para que el canvas esté en el contenedor
   colorMode(RGB);
   angleMode(DEGREES);
 
-  // Inicializar figura orgánica
   centerX = width / 2;
   centerY = height / 2;
+
   for (let i = 0; i < nodes; i++) {
-    nodeStartX[i] = 0;
-    nodeStartY[i] = 0;
-    nodeX[i] = 0;
-    nodeY[i] = 0;
-    angle[i] = 0;
+    nodeStartX[i] = nodeStartY[i] = nodeX[i] = nodeY[i] = angle[i] = 0;
     frequency[i] = random(5, 12);
   }
 
-  // Inicializar flock
   flock = new Flock();
   for (let i = 0; i < 100; i++) {
     flock.addBoid(new Boid(random(width), random(height)));
   }
+
+  document.body.style.margin = 0;
 }
 
 function draw() {
-  background(137, 151, 196, 20); // fondo relajante lavanda claro
-
-  // Dibujar figura orgánica
+  background(137, 151, 196, 20); // fondo lavanda claro
   drawShape();
   moveShape();
-
-  // Dibujar boids
   flock.run();
 }
 
@@ -68,7 +49,7 @@ function drawShape() {
   }
 
   curveTightness(organicConstant);
-  let shapeColor = lerpColor(color(200, 40, 90), color(240, 40, 100), organicConstant); // azul lavanda a azul claro
+  let shapeColor = lerpColor(color(200, 40, 90), color(240, 40, 100), organicConstant);
   fill(shapeColor);
   noStroke();
 
@@ -202,8 +183,8 @@ class Boid {
         count++;
       }
     }
-    if (count > 0) steer.div(count);
-    if (steer.mag() > 0) {
+    if (count > 0) {
+      steer.div(count);
       steer.normalize();
       steer.mult(this.maxSpeed);
       steer.sub(this.velocity);
@@ -230,9 +211,8 @@ class Boid {
       let steer = p5.Vector.sub(sum, this.velocity);
       steer.limit(this.maxForce);
       return steer;
-    } else {
-      return createVector(0, 0);
     }
+    return createVector(0, 0);
   }
 
   cohesion(boids) {
@@ -249,8 +229,7 @@ class Boid {
     if (count > 0) {
       sum.div(count);
       return this.seek(sum);
-    } else {
-      return createVector(0, 0);
     }
+    return createVector(0, 0);
   }
 }

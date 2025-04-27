@@ -1,4 +1,3 @@
-// ----------- Código p5.js -----------
 let paths = [];
 let framesBetweenParticles = 5;
 let nextParticleFrame = 0;
@@ -7,18 +6,17 @@ let particleFadeFrames = 300;
 let extraAnimations = [];
 
 function setup() {
-  createCanvas(1500, 455);
+  let canvas = createCanvas(windowWidth, windowHeight * 0.8); // canvas grande
+  canvas.parent('canvas-container');
   colorMode(HSB);
   angleMode(DEGREES);
   previousParticlePosition = createVector();
   noStroke();
-
-  document.body.style.margin = 0;
-  document.body.style.overflow = 'hidden';
 }
 
 function draw() {
   background(49, 98, 99, 0.1);
+
   for (let path of paths) {
     path.update();
     path.display();
@@ -34,20 +32,14 @@ function draw() {
 }
 
 function mousePressed() {
-  nextParticleFrame = frameCount;
-  paths.push(new Path());
-  previousParticlePosition.set(mouseX, mouseY);
-  createParticle();
+  // Solo agregar si se hace clic DENTRO del canvas
+  if (mouseY < height) {
+    nextParticleFrame = frameCount;
+    paths.push(new Path());
+    previousParticlePosition.set(mouseX, mouseY);
+    createParticle();
 
-  let choice = random(["circles", "stars"]);
-  if (choice === "circles") {
-    for (let i = 0; i < 10; i++) {
-      extraAnimations.push(new ColorCircle(mouseX + random(-50, 50), mouseY + random(-50, 50)));
-    }
-  } else {
-    for (let i = 0; i < 15; i++) {
-      extraAnimations.push(new HappyStar(mouseX, mouseY));
-    }
+    spawnRandomAnimation(mouseX, mouseY); // Ahora sí, solo cuando clickeas
   }
 }
 
@@ -67,6 +59,20 @@ function createParticle() {
   previousParticlePosition.set(mouseX, mouseY);
 }
 
+function spawnRandomAnimation(x, y) {
+  let choice = random(["circles", "stars"]);
+  if (choice === "circles") {
+    for (let i = 0; i < int(random(5, 15)); i++) {
+      extraAnimations.push(new ColorCircle(x + random(-50, 50), y + random(-50, 50)));
+    }
+  } else {
+    for (let i = 0; i < int(random(5, 20)); i++) {
+      extraAnimations.push(new HappyStar(x + random(-60, 60), y + random(-60, 60)));
+    }
+  }
+}
+
+// Tus clases originales:
 class Path {
   constructor() {
     this.particles = [];
@@ -95,7 +101,7 @@ class Path {
   }
 
   display() {
-    for (let i = this.particles.length - 1; i >= 0; i -= 1) {
+    for (let i = this.particles.length - 1; i >= 0; i--) {
       if (this.particles[i].framesRemaining <= 0) {
         this.particles.splice(i, 1);
       } else {
@@ -199,5 +205,3 @@ class HappyStar {
     return this.alpha <= 0;
   }
 }
-
-

@@ -4,17 +4,19 @@ let inkTrails = [];
 let drawingInk = false;
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, 500); // Limito el canvas a 500px de alto
+  canvas.parent('canvas-container');
   angleMode(DEGREES);
   noStroke();
-  background(0, 0, 30); // fondo oscuro para atmósfera de miedo
+  background(0, 0, 30);
 
   document.body.style.margin = 0;
-  document.body.style.overflow = 'hidden';
+  // IMPORTANTE: no bloquear el scroll
+  // document.body.style.overflow = 'hidden';  <-- Esto lo QUITAMOS
 }
 
 function draw() {
-  background(0, 0, 0, 30); // mantiene rastro suave
+  background(0, 0, 0, 30);
 
   for (let eye of creepyEyes) {
     eye.update();
@@ -42,12 +44,10 @@ function draw() {
 }
 
 function mousePressed() {
-  // Ojos
   for (let i = 0; i < 4; i++) {
     creepyEyes.push(new Eye(mouseX + random(-100, 100), mouseY + random(-50, 50)));
   }
 
-  // Sombras fantasmales
   for (let i = 0; i < 3; i++) {
     ghostShadows.push(new Ghost(mouseX, mouseY));
   }
@@ -59,7 +59,8 @@ function mouseReleased() {
   drawingInk = false;
 }
 
-// -------------------- EYE --------------------
+// -------------------- CLASES --------------------
+
 class Eye {
   constructor(x, y) {
     this.x = x;
@@ -82,7 +83,6 @@ class Eye {
   }
 }
 
-// -------------------- GHOST --------------------
 class Ghost {
   constructor(x, y) {
     this.x = x + random(-30, 30);
@@ -112,7 +112,6 @@ class Ghost {
   }
 }
 
-// -------------------- INK --------------------
 class Ink {
   constructor(x, y) {
     this.x = x;

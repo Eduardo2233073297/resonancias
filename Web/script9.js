@@ -4,13 +4,13 @@ let darkPulses = [];
 let trailGhosts = [];
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, 500);
+  canvas.parent('canvas-container');
   noStroke();
   angleMode(DEGREES);
   background(30, 30, 40);
 
   document.body.style.margin = 0;
-  document.body.style.overflow = 'hidden';
 }
 
 function draw() {

@@ -1,15 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resonancias</title>
   <link rel="stylesheet" href="style2.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
 </head>
 <body>
-  <button><P><a href="../index.html">Inicio</a></P></button>
-  <div></div>
-  <div><iframe width="15%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1161406552&color=%23000000&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><!--div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/user-154110692" title="Audio Krystal" target="_blank" style="color: #cccccc; text-decoration: none;">Audio Krystal</a> · <a href="https://soundcloud.com/user-154110692/theyre-coming-to-take-me-away" title="They’re Coming to Take Me Away (ha-ha) - Sloppy Jane (Slowed + Reverb)" target="_blank" style="color: #cccccc; text-decoration: none;">They’re Coming to Take Me Away (ha-ha) - Sloppy Jane (Slowed + Reverb)</a></div--></div>"
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
-    <script src="script7.js"> </script>
+  <button><p><a href="../index.html">🏠 Inicio</a></p></button>
+
+  <div id="main-container">
+    <div id="canvas-container"></div>
+
+    <div id="player-container">
+      <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1161406552&color=%23000000&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true">
+      </iframe>
+    </div>
+  </div>
+
+  <script src="script7.js"></script>
 </body>
 </html>

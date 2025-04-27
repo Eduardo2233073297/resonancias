@@ -1,8 +1,8 @@
-let animations = [];
 let activeAnimations = [];
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, 525);
+  canvas.parent('canvas-container'); // Mantener para que funcione dentro del contenedor
   colorMode(HSB);
   angleMode(DEGREES);
   noStroke();
@@ -26,10 +26,12 @@ function draw() {
 }
 
 function mousePressed() {
-  const types = [Confetti, BubbleExplosion, RadiantBurst];
-  const Type = random(types);
-  for (let i = 0; i < 10; i++) {
-    activeAnimations.push(new Type(mouseX, mouseY));
+  if (mouseY < height) { // Aseguramos que solo se active dentro del canvas
+    const types = [Confetti, BubbleExplosion, RadiantBurst];
+    const Type = random(types);
+    for (let i = 0; i < 10; i++) {
+      activeAnimations.push(new Type(mouseX, mouseY));
+    }
   }
 }
 
@@ -38,7 +40,7 @@ class Confetti {
   constructor(x, y) {
     this.x = x + random(-50, 50);
     this.y = y + random(-50, 50);
-    this.size = random(6, 12);
+    this.size = random(12, 20); // Aumentado
     this.hue = random(360);
     this.vx = random(-2, 2);
     this.vy = random(-1, 3);
@@ -67,13 +69,13 @@ class BubbleExplosion {
   constructor(x, y) {
     this.x = x + random(-30, 30);
     this.y = y + random(-30, 30);
-    this.r = random(10, 20);
+    this.r = random(20, 40); // Aumentado
     this.hue = random(360);
     this.alpha = 255;
   }
 
   update() {
-    this.r += 2;
+    this.r += 2.5; // expansión más rápida
     this.alpha -= 4;
   }
 
@@ -93,7 +95,7 @@ class RadiantBurst {
     this.x = x;
     this.y = y;
     this.angle = random(360);
-    this.length = random(30, 80);
+    this.length = random(60, 120); // Aumentado
     this.hue = random(360);
     this.alpha = 255;
     this.rotation = random(-3, 3);
@@ -109,7 +111,7 @@ class RadiantBurst {
     translate(this.x, this.y);
     rotate(this.angle);
     stroke(this.hue, 100, 100, this.alpha / 255);
-    strokeWeight(2);
+    strokeWeight(3); // más grueso
     line(0, 0, this.length, 0);
     pop();
   }

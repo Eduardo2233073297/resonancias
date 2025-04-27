@@ -3,16 +3,15 @@ let fadingBubbles = [];
 let witheredLeaves = [];
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, windowHeight * 0.8);
+  canvas.parent('canvas-container'); // NO cambiar esto
   colorMode(HSB);
   noStroke();
 }
 
 function draw() {
-  // Fondo sólido con color HSB(22, 0, 56)
   background(265, 95, 17);
 
-  // Actualizar y dibujar las gotas
   for (let i = fallingRaindrops.length - 1; i >= 0; i--) {
     fallingRaindrops[i].update();
     fallingRaindrops[i].display();
@@ -21,7 +20,6 @@ function draw() {
     }
   }
 
-  // Actualizar y dibujar las burbujas
   for (let i = fadingBubbles.length - 1; i >= 0; i--) {
     fadingBubbles[i].update();
     fadingBubbles[i].display();
@@ -30,7 +28,6 @@ function draw() {
     }
   }
 
-  // Actualizar y dibujar las hojas
   for (let i = witheredLeaves.length - 1; i >= 0; i--) {
     witheredLeaves[i].update();
     witheredLeaves[i].display();
@@ -53,7 +50,7 @@ function mouseDragged() {
   fadingBubbles.push(new FadingBubble(mouseX, mouseY));
 }
 
-// --- CLASES ---
+// --- CLASES (ACTUALIZADAS) ---
 
 class FallingRaindrop {
   constructor(x, y) {
@@ -129,4 +126,3 @@ class WitheredLeaf {
     return this.alpha <= 0;
   }
 }
-
