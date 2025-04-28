@@ -3,17 +3,18 @@ let spiders = [];
 let floatingGhosts = [];
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, 500); // Ajuste estándar de altura
+  canvas.parent('canvas-container');
   noStroke();
   angleMode(DEGREES);
   background(137, 151, 196);
 
   document.body.style.margin = 0;
-  document.body.style.overflow = 'hidden';
+  // IMPORTANTE: no bloquear el scroll (no poner overflow hidden)
 }
 
 function draw() {
-  background(137, 151, 196, 20); // fondo oscuro con leve transparencia
+  background(137, 151, 196, 20); // fondo con transparencia suave
 
   for (let i = bloodSplats.length - 1; i >= 0; i--) {
     bloodSplats[i].update();
@@ -54,7 +55,7 @@ function mousePressed() {
   }
 }
 
-// ---------- BLOOD ----------
+// ---------- BLOOD (MORADO CLARO) ----------
 class Blood {
   constructor(x, y) {
     this.x = x;
@@ -70,7 +71,7 @@ class Blood {
   }
 
   display() {
-    fill(150, 0, 0, this.opacity);
+    fill(200, 150, 255, this.opacity); // morado claro
     ellipse(this.x, this.y, this.r);
   }
 
@@ -79,7 +80,7 @@ class Blood {
   }
 }
 
-// ---------- SPIDER ----------
+// ---------- SPIDER (AZUL CLARO) ----------
 class Spider {
   constructor(x) {
     this.x = x;
@@ -97,10 +98,10 @@ class Spider {
   }
 
   display() {
-    stroke(200, this.alpha);
+    stroke(150, 200, 255, this.alpha); // azul claro cuerda
     line(this.x, 0, this.x, this.y);
     noStroke();
-    fill(0, 0, 0, this.alpha);
+    fill(120, 180, 255, this.alpha); // azul claro cuerpo
     ellipse(this.x, this.y, this.size, this.size);
   }
 
@@ -109,7 +110,7 @@ class Spider {
   }
 }
 
-// ---------- FLOATING GHOST ----------
+// ---------- FLOATING GHOST (VERDE CLARO) ----------
 class FloatingGhost {
   constructor(x, y) {
     this.x = x;
@@ -127,11 +128,11 @@ class FloatingGhost {
   }
 
   display() {
-    fill(255, this.opacity);
+    fill(180, 255, 200, this.opacity); // verde claro translúcido
     ellipse(this.x, this.y, this.size, this.size * 1.2);
-    fill(0, this.opacity);
-    ellipse(this.x - 10, this.y - 5, 8, 8);
-    ellipse(this.x + 10, this.y - 5, 8, 8);
+    fill(80, 120, 80, this.opacity); // ojos verdosos suaves
+    ellipse(this.x - 10, this.y - 5, 6, 6);
+    ellipse(this.x + 10, this.y - 5, 6, 6);
   }
 
   isDead() {

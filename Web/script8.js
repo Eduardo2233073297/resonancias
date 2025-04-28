@@ -1,15 +1,18 @@
 let gentleCircles = [];
 let floatingRectangles = [];
 let shiftingGrid = [];
+let drawing = false;
+let clickAnimationType;
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, 500); // Limito el canvas a 500px de alto
+  canvas.parent('canvas-container');
   noStroke();
   background(10, 10, 20);
   ellipseMode(RADIUS);
 
   document.body.style.margin = 0;
-  document.body.style.overflow = 'hidden';
+  // No bloqueamos el scroll
 }
 
 function draw() {
@@ -30,29 +33,42 @@ function draw() {
     g.display();
   }
 
-  if (mouseIsPressed) {
-    floatingRectangles.push(new Rectangle(mouseX, mouseY));
+  if (drawing) {
+    if (clickAnimationType === 'circles') {
+      floatingRectangles.push(new Rectangle(mouseX, mouseY));
+    } else if (clickAnimationType === 'grid') {
+      gentleCircles.push(new Circle(mouseX + random(-30, 30), mouseY + random(-30, 30)));
+    }
   }
 }
 
 function mousePressed() {
-  for (let i = 0; i < 6; i++) {
+  clickAnimationType = random(['circles', 'grid']);
+
+  if (clickAnimationType === 'circles') {
     gentleCircles.push(new Circle(mouseX + random(-30, 30), mouseY + random(-30, 30)));
+  } else if (clickAnimationType === 'grid') {
+    shiftingGrid.push(new Grid(mouseX, mouseY));
   }
-  shiftingGrid.push(new Grid(mouseX, mouseY));
+
+  drawing = true;
 }
 
-// Función para obtener color aleatorio rojo, blanco o negro
+function mouseReleased() {
+  drawing = false;
+}
+
 function randomPaletteColor(alpha) {
   let palette = [
-    color(255, 0, 0, alpha),     // rojo
-    color(255, 255, 255, alpha), // blanco
-    color(0, 0, 0, alpha)        // negro
+    color(255, 0, 0, alpha),
+    color(255, 255, 255, alpha),
+    color(0, 0, 0, alpha)
   ];
   return random(palette);
 }
 
-// --- CÍRCULOS SUAVES ---
+// -------------------- CLASES --------------------
+
 class Circle {
   constructor(x, y) {
     this.x = x;
@@ -75,7 +91,6 @@ class Circle {
   }
 }
 
-// --- RECTÁNGULOS FLUCTUANTES ---
 class Rectangle {
   constructor(x, y) {
     this.x = x;
@@ -100,7 +115,6 @@ class Rectangle {
   }
 }
 
-// --- CUADRÍCULA CAMBIANTE ---
 class Grid {
   constructor(x, y) {
     this.x = x;

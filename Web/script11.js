@@ -4,17 +4,18 @@ let driftingLines = [];
 let curvedLines = [];
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, 500); // altura estándar
+  canvas.parent('canvas-container');
   noStroke();
   background(137, 151, 196);
   ellipseMode(RADIUS);
 
   document.body.style.margin = 0;
-  document.body.style.overflow = 'hidden';
+  // IMPORTANTE: no bloquear el scroll
 }
 
 function draw() {
-  background(137, 151, 196, 30);
+  background(137, 151, 196, 30); // fondo con transparencia suave
 
   for (let c of floatingCircles) {
     c.update();
@@ -70,6 +71,10 @@ class Circle {
     fill(this.color);
     ellipse(this.x, this.y, this.r, this.r);
   }
+
+  isDead() {
+    return this.opacity <= 0;
+  }
 }
 
 // --- ONDAS SUAVES ---
@@ -91,6 +96,10 @@ class Ripple {
     stroke(100, this.opacity);
     strokeWeight(2);
     ellipse(this.x, this.y, this.radius);
+  }
+
+  isDead() {
+    return this.opacity <= 0;
   }
 }
 
@@ -123,7 +132,7 @@ class Line {
 class CurvedLine {
   constructor() {
     this.points = [];
-    this.numPoints = 50;  // Número de puntos para crear la curva
+    this.numPoints = 50;
     this.color = color(random(180, 255), random(100, 180), random(180, 255), 150);
   }
 
@@ -144,13 +153,12 @@ class CurvedLine {
       let p = this.points[i];
       let prev = this.points[i - 1] || this.points[0];
       let mid = createVector((p.x + prev.x) / 2, (p.y + prev.y) / 2);
-      curveVertex(mid.x, mid.y); // Dibujar líneas curvas con el punto medio
+      curveVertex(mid.x, mid.y);
     }
     endShape();
   }
 }
 
 function mouseMoved() {
-  // Al mover el mouse, agregamos una nueva CurvedLine
   curvedLines.push(new CurvedLine());
 }

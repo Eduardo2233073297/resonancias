@@ -1,16 +1,14 @@
-let animations = [];
 let confettis = [];
 let bubbles = [];
 let rays = [];
 let currentEffect = "";
 
 function setup() {
-  createCanvas(windowWidth, 500);
+  let canvas = createCanvas(windowWidth, windowHeight * 0.8); 
+  canvas.parent('canvas-container');
   colorMode(HSB);
   noStroke();
   background(49, 98, 99);
-  document.body.style.margin = 0;
-  document.body.style.overflow = 'hidden';
 }
 
 function draw() {
@@ -34,7 +32,7 @@ function draw() {
     }
   }
 
-  // Rayos felices (mientras se arrastra)
+  // Rayos felices
   for (let i = rays.length - 1; i >= 0; i--) {
     rays[i].update();
     rays[i].display();
@@ -100,7 +98,7 @@ class Bubble {
     this.x = x + random(-30, 30);
     this.y = y + random(-30, 30);
     this.r = random(10, 40);
-    this.hue = random(200, 280); // Azul-violeta
+    this.hue = random(200, 280); 
     this.alpha = 255;
   }
 
