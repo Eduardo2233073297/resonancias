@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #093f82;
+    background-color: rgb(24, 0, 51);
     display: flex;
     flex-direction: column;
     align-items: center;

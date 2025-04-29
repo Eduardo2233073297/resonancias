@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(270deg, #fdf7d4, #f0d9ff, #d0f0fd);
+  background: linear-gradient(270deg, #f8e579, #cb7ffd, #8ddfff);
   background-size: 600% 600%;
   animation: gradientMove 20s ease infinite;
   overflow-x: hidden;
@@ -68,17 +68,17 @@ body {
 }
 
 /* Colores emocionales */
-.happiness { color: #e28d00; }
-.happiness-bg .column { background-color: #ffe5b4; }
+.happiness { color: #fc9d06; }
+.happiness-bg .column { background-color: #fdd07b; }
 
-.sadness { color: #3c4f7a; }
-.sadness-bg .column { background-color: #dbe3f4; }
+.sadness { color: #153fa0; }
+.sadness-bg .column { background-color: #79a3fd; }
 
-.fear { color: #7a2e2e; }
-.fear-bg .column { background-color: #f5d6d6; }
+.fear { color: #b91515; }
+.fear-bg .column { background-color: #fd6666; }
 
-.relax { color: #2d6a4f; }
-.relax-bg .column { background-color: #d4f1dd; }
+.relax { color: #78289c; }
+.relax-bg .column { background-color: #ce69fd; }
 
 /* Responsive */
 @media (max-width: 768px) {
@@ -98,6 +98,13 @@ footer {
 }
 
 footer h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #f8aa03;
+  letter-spacing: 1px;
+}
+
+footer h4 {
   font-size: 1.5rem;
   margin-bottom: 10px;
   color: #f8aa03;
@@ -159,11 +166,11 @@ footer strong {
 
 /* Animación de cambio de color */
 @keyframes colorShift {
-  0% { color: #d97706; } /* Naranja tostado */
-  25% { color: #15803d; } /* Verde bosque */
-  50% { color: #1e40af; } /* Azul fuerte */
-  75% { color: #6d28d9; } /* Violeta */
-  100% { color: #db2777; } /* Rosado vibrante */
+  0% { color: #ff8d0b; } /* Naranja tostado */
+  25% { color: #07d653; } /* Verde bosque */
+  50% { color: #0332cc; } /* Azul fuerte */
+  75% { color: #1f014e; } /* Violeta */
+  100% { color: #cf3178; } /* Rosado vibrante */
 }
 
 /* Cascada de delays solo en floatIn para la entrada */

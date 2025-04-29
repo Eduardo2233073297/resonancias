@@ -1,10 +1,12 @@
 let fallingRaindrops = [];
 let fadingBubbles = [];
 let witheredLeaves = [];
+let floatingMists = [];
+let floatingParticles = [];
 
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight * 0.8);
-  canvas.parent('canvas-container'); // NO cambiar esto
+  canvas.parent('canvas-container');
   colorMode(HSB);
   noStroke();
 }
@@ -35,6 +37,16 @@ function draw() {
       witheredLeaves.splice(i, 1);
     }
   }
+
+  for (let mist of floatingMists) {
+    mist.update();
+    mist.display();
+  }
+
+  for (let particle of floatingParticles) {
+    particle.update();
+    particle.display();
+  }
 }
 
 function mousePressed() {
@@ -44,13 +56,17 @@ function mousePressed() {
   for (let i = 0; i < 5; i++) {
     fallingRaindrops.push(new FallingRaindrop(mouseX + random(-30, 30), mouseY));
   }
+  for (let i = 0; i < 2; i++) {
+    floatingMists.push(new FloatingMist(mouseX, mouseY));
+  }
 }
 
 function mouseDragged() {
   fadingBubbles.push(new FadingBubble(mouseX, mouseY));
+  floatingParticles.push(new FloatingParticle(mouseX, mouseY));
 }
 
-// --- CLASES (ACTUALIZADAS) ---
+// --- CLASES ORIGINALES ---
 
 class FallingRaindrop {
   constructor(x, y) {
@@ -91,7 +107,7 @@ class FadingBubble {
   }
 
   display() {
-    fill(210, 50, 80, this.alpha / 255);
+    fill(220, 60, 30, this.alpha / 255); // AZUL OSCURO
     ellipse(this.x, this.y, this.size);
   }
 
@@ -99,6 +115,7 @@ class FadingBubble {
     return this.alpha <= 0;
   }
 }
+
 
 class WitheredLeaf {
   constructor(x, y) {
@@ -126,3 +143,47 @@ class WitheredLeaf {
     return this.alpha <= 0;
   }
 }
+
+// --- NUEVAS CLASES (GRANDES y LENTAS) ---
+
+class FloatingMist {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = random(150, 250); // Más grande
+    this.speedX = random(-0.5, 0.5);
+    this.speedY = random(-0.2, 0.2);
+    this.alpha = 100;
+  }
+
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+  }
+
+  display() {
+    fill(270, 40, 20, this.alpha / 255); // morado oscuro
+    ellipse(this.x, this.y, this.size);
+  }
+}
+
+class FloatingParticle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = random(30, 60); // Más grande
+    this.speedY = random(-0.5, -1);
+    this.alpha = 200;
+  }
+
+  update() {
+    this.y += this.speedY;
+    this.alpha -= 0.5;
+  }
+
+  display() {
+    fill(270, 50, 30, this.alpha / 255); // morado oscuro más brillante
+    ellipse(this.x, this.y, this.size);
+  }
+}
+

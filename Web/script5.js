@@ -1,6 +1,8 @@
 let brokenChains = [];
 let fadingLight = [];
 let fallingPetals = [];
+let darkMists = [];
+let slowOrbs = [];
 
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight - 250); // Resta altura de barra + player
@@ -26,6 +28,16 @@ function draw() {
     petal.update();
     petal.display();
   }
+
+  for (let mist of darkMists) {
+    mist.update();
+    mist.display();
+  }
+
+  for (let orb of slowOrbs) {
+    orb.update();
+    orb.display();
+  }
 }
 
 function mousePressed() {
@@ -33,6 +45,8 @@ function mousePressed() {
     brokenChains.push(new BrokenChain(mouseX, mouseY));
     fadingLight.push(new FadingLight(mouseX, mouseY));
     fallingPetals.push(new FallingPetal(mouseX, mouseY));
+    darkMists.push(new DarkMist(mouseX, mouseY));
+    slowOrbs.push(new SlowOrb(mouseX, mouseY));
   }
 }
 
@@ -99,3 +113,69 @@ class FallingPetal {
     ellipse(this.x, this.y, this.size, this.size);
   }
 }
+
+// NIEBLA MORADA OSCURA MEJORADA (con parpadeo)
+class DarkMist {
+  constructor(x, y) {
+    this.x = x + random(-50, 50);
+    this.y = y + random(-50, 50);
+    this.size = random(100, 150);
+    this.baseOpacity = 100;
+    this.opacity = this.baseOpacity;
+    this.vx = random(-0.3, 0.3);
+    this.vy = random(-0.3, 0.3);
+    this.oscillationSpeed = random(0.5, 1.5); // velocidad del parpadeo
+    this.time = random(1000); // desfase para que no todas parpadeen igual
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.time += this.oscillationSpeed;
+    
+    // Parpadeo suave usando seno (oscila la opacidad)
+    this.opacity = this.baseOpacity + sin(this.time) * 30;
+
+    // Además, la niebla se va desvaneciendo lentamente
+    this.baseOpacity -= 0.1;
+  }
+
+  display() {
+    noStroke();
+    fill(75, 0, 130, this.opacity); // Morado oscuro
+    ellipse(this.x, this.y, this.size);
+  }
+
+  isDead() {
+    return this.baseOpacity <= 0;
+  }
+}
+
+// NUEVO: ORBES LENTOS (SlowOrb)
+class SlowOrb {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.size = random(20, 40);
+    this.opacity = 180;
+    this.vx = random(-0.2, 0.2);
+    this.vy = random(-0.2, 0.2);
+    this.color = color(random(50, 100), random(50, 100), random(100, 150));
+  }
+
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    this.opacity -= 0.5;
+  }
+
+  display() {
+    fill(this.color.levels[0], this.color.levels[1], this.color.levels[2], this.opacity);
+    ellipse(this.x, this.y, this.size);
+  }
+
+  isDead() {
+    return this.opacity <= 0;
+  }
+}
+
